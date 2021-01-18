@@ -5,27 +5,33 @@
 *@Author: Nicolas HOQUET
 **/
 
-namespace Vendor;
+namespace Vendor\Connect;
 
 class Connect
 {
-	public function conn()
+	private static $conn = null;
+	
+	public static function conn()
 	{
 		$servername = 'localhost:3306';
 		$username = 'root';
 		$password = '';
 		$dbname = 'product_db';
-
-		$conn = new \mysqli($servername, $username, $password, $dbname);
-
-		if ($conn->connect_error) {
-			die("Connection failed: ".$conn->connect_error);
+		
+		if (is_null(self::$conn))
+		{
+			self::$conn = new \mysqli($servername, $username, $password, $dbname);
 		}
 
-		#set the enconding to utf-8
-		mysqli_query($conn, "SET NAMES 'utf8'");
-		return $conn;
+		if (self::$conn->connect_error) {
+			die("Connection failed: ".self::$conn->connect_error);
+		}
 		
+		#set the enconding to utf-8
+		mysqli_query(self::$conn, "SET NAMES 'utf8'");
+		
+		return self::$conn;
 	}
+	
 }
 // EOF

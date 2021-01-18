@@ -5,35 +5,29 @@
 *@Author: Nicolas HOQUET
 **/
 
-session_start();
+use Models\Product\Product;
 
 ?>
 <html>
 <head>
 	<meta name='viewport' content='width=device-width, initial-scale=1'>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-	<link rel='stylesheet' type='text/css' href='style.css'>
+	<link rel='stylesheet' type='text/css' href='/style.css'>
 </head>
 <body>
 	<div class='container'>
 		<div class='row'>
-			<?php
-			
-			if (isset($_SESSION['err'])) {
-				echo filter_var($_SESSION['err'], FILTER_SANITIZE_STRING);
-				$_SESSION['err'] = '';			}
-			?>
-			<form  name="createProduct"  onsubmit="return validateForm()" action="create_product.php" method="post">
+			<form  name="createProduct"  onsubmit="return validateForm()" action="/product/create/" method="post">
 				<div class='row'>
 					<div class='col-md-6'>
 						<h1>Add Product</h1>
 					</div>
 					<div class='col-md-6 text-end'>
-						<input type="submit" value="Save" class="btn btn-success"> <a href="product_list.php" class="btn btn-warning">Cancel</a>
+						<input type="submit" value="Save" class="btn btn-success"> <a href="/product/list/" class="btn btn-warning">Cancel</a>
 					</div>
 				</div>
 				<hr>
-				<span id="errorbox"></span><br>
+				<span id="errorbox"><?php Product::displayError(); ?></span><br>
 				<label  for="name">Product Name:</label><br>
 				<input type="text" id="name" name="name"><br>
 				<label for="sku">SKU:</label><br>
@@ -48,10 +42,10 @@ session_start();
 					<option value="Furniture">Furniture</option>
 				</select><br>
 				<span id="infobox"></span><br>
-				<label id="sizeLabel" for="size" style="display:none">Size:</label><br>
+				<label id="sizeLabel" for="size" style="display:none">Size (in MB):</label><br>
 				<input type="number" id="size" name="size" style="display:none"><br>
 				<span class="book-attribute" style="position:absolute; top:400px">
-					<label id="weightLabel" for="weight" style="display:none">Weight:</label><br>
+					<label id="weightLabel" for="weight" style="display:none">Weight (in Kg):</label><br>
 					<input type="text" pattern="[0-9]*[.]?[0-9]*" id="weight" name="weight" style="display:none" title="Enter a numerical value with decimal separated by a dot"><br>
 				</span>
 				<fieldset id="dimensions" style="display:none;border:0;position:absolute; top:400px">
@@ -88,7 +82,6 @@ function changeType()
 	var heightLabel = document.getElementById("heightLabel");
 	var heightInput = document.getElementById("height");
 	var dimensions = document.getElementById("dimensions");
-	console.log(type);
 
 	//change the corresponding label and input style to display block
 	//display the appropriate instruction
@@ -128,6 +121,7 @@ function changeType()
 			weight.value = "";
 			dimensions.style.display = "block";
 	}
+
 }
 
 function validateForm(){

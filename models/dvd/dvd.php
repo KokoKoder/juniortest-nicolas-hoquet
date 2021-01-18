@@ -5,33 +5,36 @@
 *@Author: Nicolas HOQUET
 **/
 
-namespace Vendor\Product;
+namespace Models\Product;
+
+use Vendor\Connect\Connect;
 
 class DVD extends Product
 {
 	private $size;
 	
-	public function setProductSpecificAttributes($att, $conn)
+	public function setProductSpecificAttributes($att)
 	{
 		
 		if (count($att) == 1) {
 			$this->size = (int) $att[0];
-			$this->saveProduct($conn);
+			$this->saveProduct();
 		} else {
-			$this->err = "Missing required data: Size";
-			$this->returnError($this->err);
+			$err = "Missing required data: Size";
+			Product::returnError($err);
 		}
 	}
 	
-	public function saveProduct($conn)
-	{ //$size variable is not useful here
+	public function saveProduct()
+	{ 
+		$conn = Connect::conn();
 		$sql = "INSERT INTO products (SKU, NAME, PRICE, TYPE, SIZE) VALUES ('$this->sku', '$this->name', '$this->price', '$this->type', '$this->size')";
 		if ($conn->query($sql) === TRUE) {
-			header ("Location: product_list.php");
+			header ("Location: /product/list/");
 			exit;
 		} else {
-			$this->err = "Error: (".$conn->errno .") ".$conn->error;
-			$this->returnError($this->err);
+			$err = "Error: (".$conn->errno .") ".$conn->error;
+			Product::returnError($err);
 		}
 	}
 	
